@@ -123,23 +123,23 @@ bool BorderFinder::startFinder(QString src_path, double renderScale, bool isRead
             continue;
         src_paths.push_back(std::move(dst_path));
     }
-    qDebug()<<"src_paths.size = "<<src_paths.size();
-    qDebug()<<"444444";
+//    qDebug()<<"src_paths.size = "<<src_paths.size();
+//    qDebug()<<"444444";
     //ClipperLib::SimplifyPolygons(src_paths,src_paths,ClipperLib::pftNonZero);
     clipper.AddPaths(src_paths, ClipperLib::PolyType::ptSubject, true);
-    qDebug()<<"4443444";
+//    qDebug()<<"4443444";
     clipper.Execute(ClipperLib::ClipType::ctUnion, dst_paths, ClipperLib::PolyFillType::pftNonZero);
-    qDebug()<<"44433444";
+//    qDebug()<<"44433444";
     ClipperLib::CleanPolygons(dst_paths,10);
-    qDebug()<<"444333444";
+//    qDebug()<<"444333444";
     clipperoff.AddPaths(dst_paths,ClipperLib::jtSquare,ClipperLib::etClosedPolygon);
-    qDebug()<<"4443333444";
-    clipperoff.Execute(dst_paths,1 * scale);
-    qDebug()<<"44433333444";
+//    qDebug()<<"4443333444";
+    clipperoff.Execute(dst_paths,0 * scale);
+//    qDebug()<<"44433333444";
     ClipperLib::SimplifyPolygons(dst_paths,dst_paths, ClipperLib::PolyFillType::pftNonZero);
-    qDebug()<<"444333333444";
+//    qDebug()<<"444333333444";
     boundaries.clear();
-    qDebug()<<"555";
+//    qDebug()<<"555";
     for (const auto& dst_path : dst_paths)
     {
         if (dst_path.size() == 0)
