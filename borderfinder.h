@@ -6,6 +6,7 @@
 #include <qpoint.h>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/IO/MeshIO.hh>
+#include "node.h"
 
 using namespace std;
 
@@ -28,8 +29,12 @@ public:
     bool write_mesh(const QString& filename);
     void ramerDouglasPeucker(const vector<QPointF> &pointList, double epsilon, vector<QPointF> &out);
     double perpendicularDistance(const QPointF &pt, const QPointF lineStart, const QPointF lineEnd);
-    bool drawBorderPointsToImage(QVector<QPointF> pointList,QString imagePath);
+    bool drawBorderPointsToImage(QVector<QPointF> pointList,QString imagePath, bool transform = false);
     Mesh ax(string inputPath);
+    int ComputeByGrahamScan(QVector<QPointF> pOriginalPos, const int nOriginalCount, int iConvexIndices[], int &nConvexPointCount);
+    void creatConvexHull(string intputFile, string outputFile);
+    bool collisionDetection(string filename1, string filename2);
+    double mult(Node a, Node b, Node c);
 
 public:
     int offX;
