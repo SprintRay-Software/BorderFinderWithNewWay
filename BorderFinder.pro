@@ -28,13 +28,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         borderfinder.cpp \
-    clipper.cpp
+    clipper.cpp \
+    grahamscan.cpp \
+    node.cpp
 
 HEADERS += \
         borderfinder.h \
         borderfinder_global.h \ 
     clipper.h \
-    borderfinderconstants.h
+    borderfinderconstants.h \
+    grahamscan.h \
+    node.h
 
 unix {
     target.path = /usr/lib
