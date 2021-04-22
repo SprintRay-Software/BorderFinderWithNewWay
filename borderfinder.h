@@ -6,14 +6,23 @@
 #include <qpoint.h>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
 #include <OpenMesh/Core/IO/MeshIO.hh>
-
+#include <QTextStream>
+#include <QDebug>
+#include <QPainter>
+#include <QTextCodec>
+#include "borderfinderConstants.h"
+#include <QTextCodec>
+#include <QCoreApplication>
+#include <qdir.h>
+//#include <unordered_set>
+#include <unordered_map>
+#include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
 using namespace std;
 
 typedef OpenMesh::PolyMesh_ArrayKernelT<> Mesh;
 typedef Mesh::Point MyPoint;
 typedef std::vector<MyPoint> Boundary;
-//Mesh myMesh1;
-
+//typedef std::unordered_set<OpenMesh::FaceHandle> Component;
 constexpr int precision = 3;
 
 class BORDERFINDERSHARED_EXPORT BorderFinder
@@ -36,7 +45,7 @@ public:
     double perpendicularDistance(const QPointF &pt, const QPointF lineStart, const QPointF lineEnd);
     bool drawBorderPointsToImage(QVector<QPointF> pointList,QString imagePath);
     Mesh ax(string inputPath);
-
+    static Mesh convertComponent2Mesh(Mesh);
 public:
     int offX;
     int offY;

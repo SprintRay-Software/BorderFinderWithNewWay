@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += gui
+QT       += gui     #for include <qpainter> lib
 
 TARGET = BorderFinder
 TEMPLATE = lib
@@ -28,13 +28,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         borderfinder.cpp \
-    clipper.cpp
+        clipper.cpp
 
 HEADERS += \
         borderfinder.h \
         borderfinder_global.h \ 
-    clipper.h \
-    borderfinderconstants.h
+        clipper.h \
+        borderfinderconstants.h
 
 unix {
     target.path = /usr/lib
@@ -43,26 +43,37 @@ unix {
 
 macx {
     INCLUDEPATH += $$PWD/include_Mac
+    CONFIG(release,debug|release){
+        LIBS += -L$$PWD/lib_Mac -lOpenMeshCore
+        LIBS += -L$$PWD/lib_Mac -lOpenMeshTools
+        TARGET = BorderFinder
 
-    LIBS += -L$$PWD/lib_Mac -lOpenMeshCore
-    LIBS += -L$$PWD/lib_Mac -lOpenMeshTools
+    }else{
+        LIBS += -L$$PWD/lib_Mac -lOpenMeshCored
+        LIBS += -L$$PWD/lib_Mac -lOpenMeshToolsd
+        TARGET = BorderFinderd
+
+    }
 
 }
 win32 {
     CONFIG(release,debug|release){
 message(release)
+        TARGET = BorderFinder
         INCLUDEPATH += $$PWD/include
         LIBS += -L$$PWD/lib -lOpenMeshCore
         LIBS += -L$$PWD/lib -lOpenMeshTools
         target.path = D:\QTProjects\MR\Moonray\PlanU\Moonray-0319\Moonray-0319\AutoPlace\Borderfinder\lib\
-        target.files += D:\QTProjects\MR\Nest_DLL\build-BorderFinder-Desktop_Qt_5_14_2_MSVC2017_64bit-Release\release\BorderFinder.dll
+        target.files += BorderFinder.dll
     }else{
 message(debug)
+        CONFIG += debug
+        TARGET = BorderFinderd
         INCLUDEPATH += $$PWD/include
         LIBS += -L$$PWD/lib -lOpenMeshCored
         LIBS += -L$$PWD/lib -lOpenMeshToolsd
         target.path = D:\QTProjects\MR\Moonray\PlanU\Moonray-0319\Moonray-0319\AutoPlace\Borderfinder\lib\
-        target.files += D:\QTProjects\MR\Nest_DLL\build-BorderFinder-Desktop_Qt_5_14_2_MSVC2017_64bit-Debug\debug\BorderFinder.dll
+        target.files += BorderFinderd.dll
     }
 
 }
