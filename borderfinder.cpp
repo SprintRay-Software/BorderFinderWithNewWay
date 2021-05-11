@@ -243,6 +243,7 @@ bool BorderFinder::startFinder(QString src_path, double renderScale, bool isRead
         }
         out << ' ' << '[' << coor_X << ',' << coor_Y <<']';
         out << ' ' << '[' << minx << ',' <<miny << ']' ;
+        out << ' ' << '[' <<Uorientation<<']';
         out << endl;
         //ofs.close();
         file.close();

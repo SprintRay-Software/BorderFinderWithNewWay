@@ -52,6 +52,7 @@ public:
     Mesh myMesh;
     Mesh myMeshBuff;
     bool isReload = false;
+    float Uorientation;       //这个角度指向的是U模型到开口向上的角度偏差。
 };
 
 #endif // BORDERFINDER_H
