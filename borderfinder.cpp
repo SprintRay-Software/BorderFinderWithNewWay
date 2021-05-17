@@ -4,7 +4,7 @@ BorderFinder::BorderFinder()
 {
 }
 
-BorderFinder::BorderFinder(Mesh myMesh)
+BorderFinder::BorderFinder(Mesh &myMesh)
 {
     this->myMesh = myMesh;
 }
@@ -12,11 +12,11 @@ BorderFinder::BorderFinder(Mesh myMesh)
 bool BorderFinder::startFinder(QString src_path, double renderScale, bool isRead, QString modelFilePath)
 {
     QTextCodec *code = QTextCodec::codecForName("GBK");
-    myMesh = myMeshBuff;
-    if(myMeshBuff.vertices_empty())
-    {
-        qDebug()<<"startFinder myMesh is empty!";
-    }
+//    myMesh = myMeshBuff;
+//    if(myMeshBuff.vertices_empty())
+//    {
+//        qDebug()<<"startFinder myMesh is empty!";
+//    }
     QString localPath = QCoreApplication::applicationDirPath()+"/Borderfinder/";
     QDir localDir(localPath);
     if(!localDir.exists())
@@ -31,13 +31,13 @@ bool BorderFinder::startFinder(QString src_path, double renderScale, bool isRead
             std::cout << "Fail to read mesh!" << std::endl;
             return false;
         }
-        myMeshBuff = myMesh;
+//        myMeshBuff = myMesh;
     }
     //string tempPath1 = code->fromUnicode(QCoreApplication::applicationDirPath()+"/Borderfinder/C1.stl").data();
     double time_Start = (double)clock();
     //去掉openmesh读写这一部分，改用去除重复顶点的方式
-//    OpenMesh::IO::write_mesh(myMesh, tempPath1, OpenMesh::IO::Options::Binary);
-//    OpenMesh::IO::read_mesh(myMesh, tempPath1);
+    //OpenMesh::IO::write_mesh(myMesh, tempPath1, OpenMesh::IO::Options::Binary);
+    //OpenMesh::IO::read_mesh(myMesh, tempPath1);
     //Mesh tmpmesh=myMesh;
     //myMesh.clear();
     //myMesh = convertComponent2Mesh(tmpmesh);
@@ -131,35 +131,21 @@ bool BorderFinder::startFinder(QString src_path, double renderScale, bool isRead
         //modified by wangjx
         boundaries.push_back(std::move(boundary));
     }
-//    std::cout<<"BorderFinder coor : "<<minx<<"\t"<<
-//               miny<<"\t"<<
-//               maxx<<"\t"<<
-//               maxy<<"\t"<<
-//               (minx+maxx)/2<<"\t"<<
-//               (miny+maxy)/2<<
-//               std::endl;
     double coor_X,coor_Y;
-//    std::cout<<"BorderFinder coor2:"<<(maxx-minx)/2<<"\t"<<
-//               (maxy-miny)/2<<std::endl;
     coor_X = (maxx-minx)/2/1000;
     coor_Y = (maxy-miny)/2/1000;
-    //qDebug()<<"boundarie.size = : "<<boundaries[0].size();
     QFileInfo fileInfo(src_path);
     QString fileName = fileInfo.baseName();
     if(fileName != modelFilePath)
     {
         fileName = modelFilePath;
     }
-    //qDebug()<<"startFinder->writepath: "<<QCoreApplication::applicationDirPath() + + "/Borderfinder/" + fileName + ".txt", boundaries;
-
     QString filepng(QCoreApplication::applicationDirPath() + + "/Borderfinder/" + fileName + ".png");
     QVector<QPointF> pointList1;
-    //qDebug()<<"renderScale = : "<<renderScale;
     for (const auto& boundary : boundaries)
     {
         for (const auto& point : boundary)
         {           
-            //QPointF tempPoint(point[0],point[1]);
             //modified by wangjx
             QPointF tempPoint(point[0]*(1.0/renderScale),point[1]*(1.0/renderScale));
             pointList1.push_back(tempPoint);
@@ -176,35 +162,20 @@ bool BorderFinder::startFinder(QString src_path, double renderScale, bool isRead
 
         vector<QPointF> clonePointList;
         vector<QPointF> pointList;
-//        minx=std::numeric_limits<double>::max();
-//        miny=std::numeric_limits<double>::max();
-//        maxx=std::numeric_limits<double>::min();
-//        maxy=std::numeric_limits<double>::min();
         for (const auto& boundary : boundaries)
         {
             for (const auto& point : boundary)
             {
-                //QPointF tempPoint(point[0],point[1]);
                 //modified by wangjx
                 QPointF tempPoint(point[0]*(1.0/renderScale),point[1]*(1.0/renderScale));
-//                maxx=tempPoint.x()>maxx?tempPoint.x():maxx;
-//                maxy=tempPoint.y()>maxy?tempPoint.y():maxy;
-//                minx=tempPoint.x()<minx?tempPoint.x():minx;
-//                miny=tempPoint.y()<miny?tempPoint.y():miny;
                 clonePointList.push_back(tempPoint);
             }
         }
-//        std::cout<<"QPointF :"<<minx<<"\t"<<
-//                   maxx<<"\t"<<
-//                   miny<<"\t"<<
-//                   maxy<<std::endl;
         if (clonePointList.size() <= 0)
         {
             return false;
         }
-
         ramerDouglasPeucker(clonePointList, 15.0, pointList);
-
         double minX = pointList[0].x(), maxX = pointList[0].x(), minY = pointList[0].y(), maxY = pointList[0].y();
         for (QPointF point : pointList)
         {
@@ -229,23 +200,14 @@ bool BorderFinder::startFinder(QString src_path, double renderScale, bool isRead
         double coorW = (maxX + minX) / 2.0;
         double coorH = (maxY + minY) / 2.0;
         double y_offset = 1080 - 2 * coorH;
-
-        //qDebug()<<"pointList.size()"<<pointList.size();
-        //add wangjx
-        //std::string filename=(QCoreApplication::applicationDirPath() + + "/Borderfinder/" + fileName + "test.txt").toStdString();
-        //std::ofstream ofs(filename);
         out << pointList.size();
-        //ofs << pointList.size();
         for (QPointF point : pointList) {
-             //out << ' ' << '[' << point.x() << ',' << point.y() << ']';
-             //std::cout<<' '<<point.x() <<','<< 2*coorH - point.y();
              out << ' ' << '[' << point.x() << ',' << 2*coorH - point.y() << ']';
         }
         out << ' ' << '[' << coor_X << ',' << coor_Y <<']';
         out << ' ' << '[' << minx << ',' <<miny << ']' ;
         out << ' ' << '[' <<Uorientation<<']';
         out << endl;
-        //ofs.close();
         file.close();
     }
     return true;
@@ -263,44 +225,6 @@ Mesh BorderFinder::ax(string inputPath)
     return mesh1;
 }
 
-Mesh BorderFinder::convertComponent2Mesh(Mesh _mesh)
-{
-    Mesh mesh;
-    unordered_map<OpenMesh::VertexHandle,OpenMesh::VertexHandle> vertexMap;
-    //std::cout<<"Distance ="<<std::distance(_mesh.vertices_begin(),_mesh.vertices_end())<<std::endl;
-    for (const auto&f_h:_mesh.faces())
-    {
-        std::vector<OpenMesh::VertexHandle> vertexHandles;
-        for(auto fv_h:_mesh.fv_range(f_h))
-        {
-            if(vertexMap.find(fv_h)==vertexMap.end())
-            {
-                vertexMap[fv_h]=mesh.add_vertex(_mesh.point(fv_h));
-            }
-            vertexHandles.push_back(vertexMap[fv_h]);
-        }
-        //std::cout<<"VertexMap.size"<<vertexMap.size()<<std::endl;
-        mesh.add_face(vertexHandles);
-    }
-    return std::move(mesh);
-
-
-//    std::set<Mesh::VertexHandle > vertex_Set(_mesh.vertices_begin(),_mesh.vertices_end());
-//    std::set<MyPoint>             point_Set;
-//    for(auto &p:vertex_Set)
-//    {
-//        point_Set.insert(_mesh.point(p));
-//    }
-
-//    std::vector<MyPoint> vertexs(point_Set.begin(),point_Set.end());
-
-//    //std::copy(vertex_Set.begin(),vertex_Set.end(),vertexs.begin());
-
-//    //tmpmesh.add_face(vertexs);
-//    return std::move(tmpmesh);
-
-
-}
 
 bool BorderFinder::cloneModelAndProcess(string inputPath,double scale, QString modelFilePath)
 {
@@ -356,8 +280,6 @@ bool BorderFinder::cloneModelAndProcess(string inputPath,double scale, QString m
         QString generatePath = QCoreApplication::applicationDirPath() + BORDERFINDERCONSTANTS::CLONE_STL_PATH + "/" + fileName + "/" + fileName + ".stl";
         qDebug()<<"generatePath: "<<generatePath;
         //auto localPath = generatePath.toLocal8Bit();
-        //qDebug()<<"read_mesh11111: "<<QString::fromStdString(inputPath);
-        //qDebug()<<"write_mesh11111: "<<localPath;
         str = code->fromUnicode(generatePath).data();
         if (!OpenMesh::IO::write_mesh(myMesh, str, OpenMesh::IO::Options::Binary))
         {

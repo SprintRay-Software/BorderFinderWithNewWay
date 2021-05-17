@@ -11,7 +11,7 @@ TEMPLATE = lib
 
 DEFINES += _USE_MATH_DEFINES
 
-DEFINES += OM_STATIC_BUILD
+DEFINES += OM_STATIC_BUILD      #for openMesh
 
 DEFINES += BORDERFINDER_LIBRARY
 
@@ -76,5 +76,26 @@ message(debug)
         target.files += BorderFinderd.dll
     }
 
+}
+mac{
+message(Mac)
+CONFIG(release,debug|release){
+message(release)
+    TARGET = BorderFinder
+    INCLUDEPATH += $$PWD/include
+    LIBS += -L$$PWD/lib_Mac -lOpenMeshCore
+    LIBS += -L$$PWD/lib_Mac -lOpenMeshTools
+    target.path = D:\QTProjects\MR\Moonray\PlanU\Moonray-0319\Moonray-0319\AutoPlace\Borderfinder\lib\
+    target.files += BorderFinder.dll
+}else{
+message(debug)
+    CONFIG += debug
+    TARGET = BorderFinderd
+    INCLUDEPATH += $$PWD/include
+    LIBS += -L$$PWD/lib_Mac -lOpenMeshCored
+    LIBS += -L$$PWD/lib_Mac -lOpenMeshToolsd
+    target.path = D:\QTProjects\MR\Moonray\PlanU\Moonray-0319\Moonray-0319\AutoPlace\Borderfinder\lib\
+    target.files += BorderFinderd.dll
+}
 }
 INSTALLS += target
